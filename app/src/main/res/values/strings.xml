@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">FirebaseTest</string>
+    <string name="email">email</string>
+    <string name="password">password</string>
+    <string name="signup">signup</string>
+    <string name="signin">signin</string>
+    <string name="login">login</string>
+    <string name="name">cloud text</string>
+    <string name="button">submit</string>
+</resources>
