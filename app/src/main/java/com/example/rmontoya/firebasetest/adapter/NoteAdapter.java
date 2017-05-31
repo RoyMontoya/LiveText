@@ -17,7 +17,7 @@ import butterknife.ButterKnife;
 
 public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteViewHolder> {
 
-    private String ROW_EXTRA = "ROW";
+    public static String ROW_EXTRA = "ROW";
     List<String> elements;
 
     public NoteAdapter(List<String> notes) {
