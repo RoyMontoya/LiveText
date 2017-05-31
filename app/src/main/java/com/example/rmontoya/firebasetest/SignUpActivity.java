@@ -1,8 +1,8 @@
 package com.example.rmontoya.firebasetest;
 
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -44,17 +44,17 @@ public class SignUpActivity extends AppCompatActivity {
 
     private void setupListeners() {
         RxView.clicks(signInButton).subscribe(aVoid -> {
-            if(isEmailAndPasswordInvalid()) return;
+            if (isEmailAndPasswordInvalid()) return;
             firebaseAuth.signInWithEmailAndPassword(email, password)
                     .addOnCompleteListener(this, task -> {
-                       if(task.isSuccessful())startMainActivity();
+                        if (task.isSuccessful()) startMainActivity();
                     });
         });
         RxView.clicks(signUpText).subscribe(aVoid -> {
-            if(isEmailAndPasswordInvalid()) return;
+            if (isEmailAndPasswordInvalid()) return;
             firebaseAuth.createUserWithEmailAndPassword(email, password)
                     .addOnCompleteListener(this, task -> {
-                        if(task.isSuccessful())startMainActivity();
+                        if (task.isSuccessful()) startMainActivity();
                     });
         });
     }
@@ -64,7 +64,7 @@ public class SignUpActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    private boolean isEmailAndPasswordInvalid(){
+    private boolean isEmailAndPasswordInvalid() {
         email = emailInput.getText().toString();
         password = passwordInput.getText().toString();
         return (email.isEmpty() || password.isEmpty());
