@@ -13,7 +13,7 @@ import com.jakewharton.rxbinding.view.RxView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class SignUpActivity extends AppCompatActivity {
+public class SignUpActivity extends BaseActivity {
 
     private FirebaseAuth firebaseAuth;
     @BindView(R.id.signup_text)
@@ -32,14 +32,8 @@ public class SignUpActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
-
-        setupActivity();
-    }
-
-    private void setupActivity() {
         ButterKnife.bind(this);
-        firebaseAuth = FirebaseAuth.getInstance();
-        setupListeners();
+        setViews();
     }
 
     private void setupListeners() {
@@ -68,5 +62,11 @@ public class SignUpActivity extends AppCompatActivity {
         email = emailInput.getText().toString();
         password = passwordInput.getText().toString();
         return (email.isEmpty() || password.isEmpty());
+    }
+
+    @Override
+    void setViews() {
+        firebaseAuth = FirebaseAuth.getInstance();
+        setupListeners();
     }
 }
