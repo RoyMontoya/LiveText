@@ -23,8 +23,4 @@ public class Note implements Serializable {
     public String getFirebaseKey() {
         return firebaseKey;
     }
-
-    public void setFirebaseKey(String firebaseKey) {
-        this.firebaseKey = firebaseKey;
-    }
 }

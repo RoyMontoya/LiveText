@@ -1,17 +1,19 @@
 package com.example.rmontoya.firebasetest;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
 import com.example.rmontoya.firebasetest.adapter.NoteAdapter;
 import com.example.rmontoya.firebasetest.model.Note;
+import com.example.rmontoya.firebasetest.storage.ListStorage;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
+import com.jakewharton.rxbinding.view.RxView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,11 +25,11 @@ public class MainActivity extends BaseActivity {
 
     @BindView(R.id.notes_list)
     RecyclerView notesList;
-    private static final String NOTES_REFERENCE = "notes";
+    @BindView(R.id.add_fab)
+    FloatingActionButton addFab;
     private List<Note> notes = new ArrayList<>();
     private NoteAdapter adapter;
-    private DatabaseReference myRef;
-    private FirebaseDatabase database = FirebaseDatabase.getInstance();
+    private DatabaseReference listReference = ListStorage.getListReference();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,18 +41,22 @@ public class MainActivity extends BaseActivity {
     }
 
     private void setDatabaseReferences() {
-        myRef = database.getReference(NOTES_REFERENCE);
-        myRef.addChildEventListener(new ChildEventListener() {
+        listReference.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                Note note = new Note(dataSnapshot.getValue(String.class), myRef.getKey() + "/" + dataSnapshot.getKey());
+                Note note = new Note(dataSnapshot.getValue(String.class), getFullReference(dataSnapshot.getKey()));
                 notes.add(note);
                 adapter.notifyDataSetChanged();
             }
 
             @Override
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-
+                //TODO change the key
+                int position = Integer.valueOf(dataSnapshot.getKey());
+                Note note = notes.get(position);
+                note.setNoteValue(dataSnapshot.getValue().toString());
+                notes.set(position, note);
+                adapter.notifyDataSetChanged();
             }
 
             @Override
@@ -71,6 +77,10 @@ public class MainActivity extends BaseActivity {
 
     }
 
+    private String getFullReference(String rowKey) {
+        return listReference.getKey() + "/" + rowKey;
+    }
+
 
     private void setNoteList() {
         notesList.setLayoutManager(new LinearLayoutManager(this));
@@ -81,5 +91,9 @@ public class MainActivity extends BaseActivity {
     @Override
     void setViews() {
         setNoteList();
+        RxView.clicks(addFab).subscribe(aVoid -> {
+            Intent intent = new Intent(this, EditActivity.class);
+            startActivity(intent);
+        });
     }
 }

@@ -8,4 +8,5 @@
     <string name="name">cloud noteValue</string>
     <string name="button">submit</string>
     <string name="new_text">new Text</string>
+    <string name="delete_button_text">delete</string>
 </resources>
