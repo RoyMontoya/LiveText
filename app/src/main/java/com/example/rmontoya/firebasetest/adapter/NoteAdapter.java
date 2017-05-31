@@ -1,10 +1,14 @@
 package com.example.rmontoya.firebasetest.adapter;
 
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import com.example.rmontoya.firebasetest.EditActivity;
+import com.example.rmontoya.firebasetest.R;
 
 import java.util.List;
 
@@ -13,6 +17,7 @@ import butterknife.ButterKnife;
 
 public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteViewHolder> {
 
+    private String ROW_EXTRA = "ROW";
     List<String> elements;
 
     public NoteAdapter(List<String> notes) {
@@ -21,7 +26,7 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteViewHolder
 
     @Override
     public NoteViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(android.R.layout.simple_list_item_1, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_row, parent, false);
         return new NoteViewHolder(view);
     }
 
@@ -35,15 +40,22 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteViewHolder
         return elements.size();
     }
 
-    class NoteViewHolder extends RecyclerView.ViewHolder {
+    class NoteViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-        @BindView(android.R.id.text1)
+        @BindView(R.id.text_row)
         TextView noteText;
 
         NoteViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
+            noteText.setOnClickListener(this);
         }
 
+        @Override
+        public void onClick(View view) {
+            Intent intent = new Intent(view.getContext(), EditActivity.class);
+            intent.putExtra(ROW_EXTRA, noteText.getText().toString());
+            view.getContext().startActivity(intent);
+        }
     }
 }

@@ -1,8 +1,7 @@
 package com.example.rmontoya.firebasetest;
 
-import android.support.design.widget.FloatingActionButton;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.widget.EditText;
 
 import butterknife.BindView;
