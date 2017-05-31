@@ -5,7 +5,7 @@
     <string name="signup">signup</string>
     <string name="signin">signin</string>
     <string name="login">login</string>
-    <string name="name">cloud text</string>
+    <string name="name">cloud noteValue</string>
     <string name="button">submit</string>
     <string name="new_text">new Text</string>
 </resources>
