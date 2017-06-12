@@ -42,14 +42,39 @@ public class MainActivity extends BaseActivity {
         setViews();
     }
 
+    private String getFullReference(String rowKey) {
+        return listReference.getKey() + "/" + rowKey;
+    }
+
+
+    private void setNoteList() {
+        notesList.setLayoutManager(new LinearLayoutManager(this));
+        adapter = new NoteAdapter(noteArray);
+        notesList.setAdapter(adapter);
+    }
+
+    private void updateAdapter() {
+        noteArray.clear();
+        noteArray.addAll(noteHash.values());
+        adapter.notifyDataSetChanged();
+    }
+
+    @Override
+    void setViews() {
+        setNoteList();
+        RxView.clicks(addFab).subscribe(aVoid -> {
+            Intent intent = new Intent(this, EditActivity.class);
+            startActivity(intent);
+        });
+    }
+
     private void setDatabaseReferences() {
         listReference.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 Note note = new Note(dataSnapshot.getValue(String.class), getFullReference(dataSnapshot.getKey()));
                 noteHash.put(note.getFirebaseKey(), note);
-                updateNoteArray();
-                adapter.notifyDataSetChanged();
+                updateAdapter();
             }
 
             @Override
@@ -58,17 +83,14 @@ public class MainActivity extends BaseActivity {
                 Note note = noteHash.get(position);
                 note.setNoteValue(dataSnapshot.getValue().toString());
                 noteHash.put(position, note);
-                updateNoteArray();
-                adapter.notifyDataSetChanged();
+                updateAdapter();
             }
 
             @Override
             public void onChildRemoved(DataSnapshot dataSnapshot) {
                 String position = getFullReference(dataSnapshot.getKey());
                 noteHash.remove(position);
-                updateNoteArray();
-                adapter.notifyDataSetChanged();
-
+                updateAdapter();
             }
 
             @Override
@@ -80,33 +102,6 @@ public class MainActivity extends BaseActivity {
             public void onCancelled(DatabaseError databaseError) {
 
             }
-        });
-
-    }
-
-    private String getFullReference(String rowKey) {
-        return listReference.getKey() + "/" + rowKey;
-    }
-
-
-    private void setNoteList() {
-        notesList.setLayoutManager(new LinearLayoutManager(this));
-        updateNoteArray();
-        adapter = new NoteAdapter(noteArray);
-        notesList.setAdapter(adapter);
-    }
-
-    private void updateNoteArray() {
-        noteArray.clear();
-        noteArray.addAll(noteHash.values());
-    }
-
-    @Override
-    void setViews() {
-        setNoteList();
-        RxView.clicks(addFab).subscribe(aVoid -> {
-            Intent intent = new Intent(this, EditActivity.class);
-            startActivity(intent);
         });
     }
 }
