@@ -16,6 +16,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.jakewharton.rxbinding.view.RxView;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import butterknife.BindView;
@@ -27,7 +28,8 @@ public class MainActivity extends BaseActivity {
     RecyclerView notesList;
     @BindView(R.id.add_fab)
     FloatingActionButton addFab;
-    private List<Note> notes = new ArrayList<>();
+    private HashMap<String, Note> noteHash = new HashMap<>();
+    private List<Note> noteArray = new ArrayList<>();
     private NoteAdapter adapter;
     private DatabaseReference listReference = ListStorage.getListReference();
 
@@ -45,22 +47,27 @@ public class MainActivity extends BaseActivity {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 Note note = new Note(dataSnapshot.getValue(String.class), getFullReference(dataSnapshot.getKey()));
-                notes.add(note);
+                noteHash.put(note.getFirebaseKey(), note);
+                updateNoteArray();
                 adapter.notifyDataSetChanged();
             }
 
             @Override
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-                //TODO change the key
-                int position = Integer.valueOf(dataSnapshot.getKey());
-                Note note = notes.get(position);
+                String position = getFullReference(dataSnapshot.getKey());
+                Note note = noteHash.get(position);
                 note.setNoteValue(dataSnapshot.getValue().toString());
-                notes.set(position, note);
+                noteHash.put(position, note);
+                updateNoteArray();
                 adapter.notifyDataSetChanged();
             }
 
             @Override
             public void onChildRemoved(DataSnapshot dataSnapshot) {
+                String position = getFullReference(dataSnapshot.getKey());
+                noteHash.remove(position);
+                updateNoteArray();
+                adapter.notifyDataSetChanged();
 
             }
 
@@ -84,8 +91,14 @@ public class MainActivity extends BaseActivity {
 
     private void setNoteList() {
         notesList.setLayoutManager(new LinearLayoutManager(this));
-        adapter = new NoteAdapter(notes);
+        updateNoteArray();
+        adapter = new NoteAdapter(noteArray);
         notesList.setAdapter(adapter);
+    }
+
+    private void updateNoteArray() {
+        noteArray.clear();
+        noteArray.addAll(noteHash.values());
     }
 
     @Override
