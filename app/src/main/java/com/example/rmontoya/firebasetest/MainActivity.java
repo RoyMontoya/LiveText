@@ -42,10 +42,6 @@ public class MainActivity extends BaseActivity {
         setViews();
     }
 
-    private String getFullReference(String rowKey) {
-        return listReference.getKey() + "/" + rowKey;
-    }
-
 
     private void setNoteList() {
         notesList.setLayoutManager(new LinearLayoutManager(this));
@@ -72,14 +68,14 @@ public class MainActivity extends BaseActivity {
         listReference.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                Note note = new Note(dataSnapshot.getValue(String.class), getFullReference(dataSnapshot.getKey()));
+                Note note = new Note(dataSnapshot.getValue(String.class), getFullKey(dataSnapshot.getKey()));
                 noteHash.put(note.getFirebaseKey(), note);
                 updateAdapter();
             }
 
             @Override
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-                String position = getFullReference(dataSnapshot.getKey());
+                String position = getFullKey(dataSnapshot.getKey());
                 Note note = noteHash.get(position);
                 note.setNoteValue(dataSnapshot.getValue().toString());
                 noteHash.put(position, note);
@@ -88,7 +84,7 @@ public class MainActivity extends BaseActivity {
 
             @Override
             public void onChildRemoved(DataSnapshot dataSnapshot) {
-                String position = getFullReference(dataSnapshot.getKey());
+                String position = getFullKey(dataSnapshot.getKey());
                 noteHash.remove(position);
                 updateAdapter();
             }
