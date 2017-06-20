@@ -19,7 +19,7 @@ import butterknife.ButterKnife;
 public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteViewHolder> {
 
     public static String ROW_EXTRA = "ROW";
-    List<Note> elements;
+    private List<Note> elements;
 
     public NoteAdapter(List<Note> notes) {
         this.elements = notes;
